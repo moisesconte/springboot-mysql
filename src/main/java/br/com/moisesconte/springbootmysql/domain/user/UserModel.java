@@ -2,11 +2,14 @@ package br.com.moisesconte.springbootmysql.domain.user;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
+import org.hibernate.annotations.Type;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,22 +26,25 @@ public class UserModel implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+  private UUID id;
 
   private String name;
   private String login;
   private String password;
-  private UserRole role;
 
-  public UserModel(String login, String password, UserRole role) {
+  @Column(columnDefinition = "VARCHAR(100)")
+  private String role;
+
+  public UserModel(String name, String login, String password, UserRole role) {
+    this.name = name;
     this.login = login;
     this.password = password;
-    this.role = role;
+    this.role = role.getRole();
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (this.role == UserRole.ADMIN)
+    if (this.role == UserRole.ADMIN.toString())
       return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
     else
       return List.of(new SimpleGrantedAuthority("ROLE_USER"));
