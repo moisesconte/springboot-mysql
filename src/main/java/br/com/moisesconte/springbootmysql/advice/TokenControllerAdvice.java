@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import br.com.moisesconte.springbootmysql.exception.TokenRefreshException;
+import br.com.moisesconte.springbootmysql.exceptions.TokenRefreshException;
 
 @RestControllerAdvice
 public class TokenControllerAdvice {

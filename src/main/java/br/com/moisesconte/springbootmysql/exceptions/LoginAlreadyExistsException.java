@@ -1,4 +1,4 @@
-package br.com.moisesconte.springbootmysql.exception;
+package br.com.moisesconte.springbootmysql.exceptions;
 
 public class LoginAlreadyExistsException {
   private String message = "Login já em uso.";

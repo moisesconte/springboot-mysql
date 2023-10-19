@@ -1,4 +1,4 @@
-package br.com.moisesconte.springbootmysql.exception;
+package br.com.moisesconte.springbootmysql.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
