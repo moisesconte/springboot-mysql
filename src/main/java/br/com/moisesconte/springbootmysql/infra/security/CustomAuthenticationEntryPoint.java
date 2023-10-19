@@ -22,22 +22,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
       throws IOException, ServletException {
 
     response.setContentType("application/json;charset=UTF-8");
-    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Defina o status HTTP desejado
-
-    // ObjectMapper mapper = new ObjectMapper();
-    // response.getWriter().write(mapper.writeValueAsString(new Error(403,
-    // "Forbidden", "Acesso Negado!")));
-
-    // Crie um objeto JSON com a mensagem de erro personalizada
-    // ObjectMapper mapper = new ObjectMapper();
-    // String json = mapper.writeValueAsString("Mensagem de erro personalizada");
-
-    // // response.getWriter().write(json);
-
-    // // Escreva a resposta no corpo da resposta HTTP
-    // PrintWriter out = response.getWriter();
-    // out.print(json);
-    // out.flush();
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
     final Map<String, Object> body = new HashMap<>();
     body.put("status", HttpServletResponse.SC_UNAUTHORIZED);

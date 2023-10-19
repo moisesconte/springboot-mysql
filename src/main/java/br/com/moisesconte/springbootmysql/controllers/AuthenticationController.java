@@ -60,8 +60,6 @@ public class AuthenticationController {
   public ResponseEntity<?> register(@Validated @RequestBody RegisterDTO registerRequest) {
 
     if (this.userRepository.findByLogin(registerRequest.getLogin()) != null) {
-      // final Map<String, Object> body = new HashMap<>();
-      // body.put("message", "Login já em uso.");
       LoginAlreadyExistsException loginAlreadyExistsException = new LoginAlreadyExistsException();
 
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginAlreadyExistsException);
@@ -85,12 +83,12 @@ public class AuthenticationController {
         .map(RefreshTokenModel::getUser)
         .map(user -> {
           String token = tokenService.generateToken(user);
-
           var refreshTokenModel = refreshTokenService.createRefreshToken(user.getId());
-
           return ResponseEntity.ok(new TokenRefreshResponseDTO(token, refreshTokenModel.getToken()));
         })
         .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
 
   }
+
+  
 }
