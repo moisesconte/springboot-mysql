@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-import br.com.moisesconte.springbootmysql.domain.user.RefreshTokenModel;
+import br.com.moisesconte.springbootmysql.domain.user.models.RefreshTokenModel;
 import br.com.moisesconte.springbootmysql.repositories.IRefreshTokenRepository;
 import br.com.moisesconte.springbootmysql.repositories.IUserRepository;
 

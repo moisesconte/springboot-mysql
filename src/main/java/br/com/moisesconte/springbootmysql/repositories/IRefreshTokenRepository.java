@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
-import br.com.moisesconte.springbootmysql.domain.user.RefreshTokenModel;
-import br.com.moisesconte.springbootmysql.domain.user.UserModel;
+import br.com.moisesconte.springbootmysql.domain.user.models.RefreshTokenModel;
+import br.com.moisesconte.springbootmysql.domain.user.models.UserModel;
+
 import java.util.Optional;
 import java.util.List;
 

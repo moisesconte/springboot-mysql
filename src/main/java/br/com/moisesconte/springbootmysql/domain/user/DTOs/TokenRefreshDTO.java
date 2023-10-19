@@ -1,6 +1,6 @@
-package br.com.moisesconte.springbootmysql.domain.user;
+package br.com.moisesconte.springbootmysql.domain.user.DTOs;
 
-public class TokenRefreshRequest {
+public class TokenRefreshDTO {
   
   private String refreshToken;
 

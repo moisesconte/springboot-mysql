@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.moisesconte.springbootmysql.domain.user.AuthenticationDTO;
-import br.com.moisesconte.springbootmysql.domain.user.LoginResponseDTO;
-import br.com.moisesconte.springbootmysql.domain.user.RefreshTokenModel;
-import br.com.moisesconte.springbootmysql.domain.user.RegisterRequestDTO;
-import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshRequest;
-import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshResponse;
-import br.com.moisesconte.springbootmysql.domain.user.UserModel;
+import br.com.moisesconte.springbootmysql.domain.user.DTOs.AuthenticationDTO;
+import br.com.moisesconte.springbootmysql.domain.user.DTOs.LoginResponseDTO;
+import br.com.moisesconte.springbootmysql.domain.user.DTOs.RegisterDTO;
+import br.com.moisesconte.springbootmysql.domain.user.DTOs.TokenRefreshDTO;
+import br.com.moisesconte.springbootmysql.domain.user.DTOs.TokenRefreshResponseDTO;
+import br.com.moisesconte.springbootmysql.domain.user.models.RefreshTokenModel;
+import br.com.moisesconte.springbootmysql.domain.user.models.UserModel;
 import br.com.moisesconte.springbootmysql.exception.LoginAlreadyExistsException;
 import br.com.moisesconte.springbootmysql.exception.TokenRefreshException;
 import br.com.moisesconte.springbootmysql.infra.security.TokenService;
@@ -57,7 +57,7 @@ public class AuthenticationController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<?> register(@Validated @RequestBody RegisterRequestDTO registerRequest) {
+  public ResponseEntity<?> register(@Validated @RequestBody RegisterDTO registerRequest) {
 
     if (this.userRepository.findByLogin(registerRequest.getLogin()) != null) {
       // final Map<String, Object> body = new HashMap<>();
@@ -77,7 +77,7 @@ public class AuthenticationController {
   }
 
   @PostMapping("/refreshtoken")
-  public ResponseEntity<?> refreshToken(@Validated @RequestBody TokenRefreshRequest request) {
+  public ResponseEntity<?> refreshToken(@Validated @RequestBody TokenRefreshDTO request) {
     String requestRefreshToken = request.getRefreshToken();
 
     return refreshTokenService.findByToken(requestRefreshToken)
@@ -88,7 +88,7 @@ public class AuthenticationController {
 
           var refreshTokenModel = refreshTokenService.createRefreshToken(user.getId());
 
-          return ResponseEntity.ok(new TokenRefreshResponse(token, refreshTokenModel.getToken()));
+          return ResponseEntity.ok(new TokenRefreshResponseDTO(token, refreshTokenModel.getToken()));
         })
         .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
 

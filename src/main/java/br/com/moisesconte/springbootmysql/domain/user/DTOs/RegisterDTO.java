@@ -1,15 +1,17 @@
-package br.com.moisesconte.springbootmysql.domain.user;
+package br.com.moisesconte.springbootmysql.domain.user.DTOs;
+
+import br.com.moisesconte.springbootmysql.domain.user.models.UserRoleModel;
 
 // public record RegisterDTO(String name, String login, String password, UserRole role) {
 
 // }
 
-public class RegisterRequestDTO {
+public class RegisterDTO {
 
   private String name;
   private String login;
   private String password;
-  private UserRole role;
+  private UserRoleModel role;
 
   public String getName() {
     return name;
@@ -35,11 +37,11 @@ public class RegisterRequestDTO {
     this.password = password;
   }
 
-  public UserRole getRole() {
+  public UserRoleModel getRole() {
     return role;
   }
 
-  public void setRole(UserRole role) {
+  public void setRole(UserRoleModel role) {
     this.role = role;
   }
 

@@ -1,12 +1,12 @@
-package br.com.moisesconte.springbootmysql.domain.user;
+package br.com.moisesconte.springbootmysql.domain.user.models;
 
-public enum UserRole {
+public enum UserRoleModel {
   ADMIN("ADMIN"),
   USER("USER");
 
   private String role;
 
-  UserRole(String role) {
+  UserRoleModel(String role) {
     this.role = role;
   }
 

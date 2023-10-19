@@ -1,4 +1,4 @@
-package br.com.moisesconte.springbootmysql.domain.products;
+package br.com.moisesconte.springbootmysql.domain.products.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

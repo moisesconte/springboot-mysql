@@ -1,4 +1,4 @@
-package br.com.moisesconte.springbootmysql.domain.user;
+package br.com.moisesconte.springbootmysql.domain.user.models;
 
 import java.sql.Types;
 import java.util.Collection;
@@ -38,7 +38,7 @@ public class UserModel implements UserDetails {
   @JdbcTypeCode(Types.VARCHAR)
   private String role;
 
-  public UserModel(String name, String login, String password, UserRole role) {
+  public UserModel(String name, String login, String password, UserRoleModel role) {
     this.name = name;
     this.login = login;
     this.password = password;
@@ -47,7 +47,7 @@ public class UserModel implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (this.role == UserRole.ADMIN.toString())
+    if (this.role == UserRoleModel.ADMIN.toString())
       return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
     else
       return List.of(new SimpleGrantedAuthority("ROLE_USER"));

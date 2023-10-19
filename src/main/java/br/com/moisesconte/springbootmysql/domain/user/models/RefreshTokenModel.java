@@ -1,4 +1,4 @@
-package br.com.moisesconte.springbootmysql.domain.user;
+package br.com.moisesconte.springbootmysql.domain.user.models;
 
 import java.sql.Types;
 import java.time.Instant;
