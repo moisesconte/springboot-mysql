@@ -1,7 +1,10 @@
 package br.com.moisesconte.springbootmysql.domain.user;
 
+import java.sql.Types;
 import java.time.Instant;
 import java.util.UUID;
+
+import org.hibernate.annotations.JdbcTypeCode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,20 +19,23 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity(name = "refresh_token")
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class RefreshTokenModel {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @JdbcTypeCode(Types.VARCHAR)
+  @Column(columnDefinition = "VARCHAR(200)")
   private UUID id;
 
   @OneToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id")
   private UserModel user;
 
-  @Column(nullable = false, unique = true)
-  private UUID token;
+  @Column(columnDefinition = "VARCHAR(200)", nullable = false, unique = true)
+  @JdbcTypeCode(Types.VARCHAR)
+  private String token;
 
   private Instant expiryDate;
+  
 }

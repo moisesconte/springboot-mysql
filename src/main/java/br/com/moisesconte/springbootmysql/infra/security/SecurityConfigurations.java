@@ -48,13 +48,14 @@ public class SecurityConfigurations {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-    return httpSecurity
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    return http
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-            .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+            .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+            // .requestMatchers(HttpMethod.POST, "/auth/refreshtoken").permitAll()
+            // .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
             .requestMatchers(HttpMethod.POST, "/products").hasAnyRole("ADMIN")
             .anyRequest().authenticated())
         .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)

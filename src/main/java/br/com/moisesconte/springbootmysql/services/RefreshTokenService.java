@@ -26,20 +26,19 @@ public class RefreshTokenService {
   @Autowired
   private IUserRepository userRepository;
 
-  public Optional<RefreshTokenModel> findByToken(UUID token) {
+  public Optional<RefreshTokenModel> findByToken(String token) {
     return refreshTokenRepository.findByToken(token);
   }
 
   public RefreshTokenModel createRefreshToken(UUID userId) {
     RefreshTokenModel refreshToken = new RefreshTokenModel();
 
-    refreshToken.setToken(userId);
+    refreshToken.setToken(userId.toString());
     refreshToken.setUser(userRepository.findById(userId).get());
     refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurantionMs));
-    refreshToken.setToken(UUID.randomUUID());
+    refreshToken.setToken(UUID.randomUUID().toString());
 
     refreshToken = refreshTokenRepository.save(refreshToken);
-
 
     return refreshToken;
   }

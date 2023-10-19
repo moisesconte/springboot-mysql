@@ -1,5 +1,6 @@
 package br.com.moisesconte.springbootmysql.controllers;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import br.com.moisesconte.springbootmysql.domain.user.AuthenticationDTO;
 import br.com.moisesconte.springbootmysql.domain.user.LoginResponseDTO;
 import br.com.moisesconte.springbootmysql.domain.user.RefreshTokenModel;
 import br.com.moisesconte.springbootmysql.domain.user.RegisterDTO;
+import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshRequest;
+import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshResponse;
 import br.com.moisesconte.springbootmysql.domain.user.UserModel;
 import br.com.moisesconte.springbootmysql.infra.security.TokenService;
 import br.com.moisesconte.springbootmysql.repositories.IUserRepository;
@@ -61,10 +64,24 @@ public class AuthenticationController {
     String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
     UserModel newUser = new UserModel(data.name(), data.login(), encryptedPassword, data.role());
 
-    System.out.println(newUser.getRole());
-
     this.userRepository.save(newUser);
 
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/refreshtoken")
+  public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) throws Exception {
+    String requestRefreshToken = request.getRefreshToken();
+
+    return refreshTokenService.findByToken(requestRefreshToken)
+        .map(refreshTokenService::verifyExpiration)
+        .map(RefreshTokenModel::getUser)
+        .map(user -> {
+          String token = tokenService.generateToken(user);
+
+          return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+        })
+        .orElseThrow(() -> new Exception("Refresh token is not in database!"));
+
   }
 }
