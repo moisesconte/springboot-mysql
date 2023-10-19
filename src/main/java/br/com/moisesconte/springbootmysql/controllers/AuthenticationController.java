@@ -61,12 +61,14 @@ public class AuthenticationController {
 
     if (this.userRepository.findByLogin(registerRequest.getLogin()) != null) {
       LoginAlreadyExistsException loginAlreadyExistsException = new LoginAlreadyExistsException();
-
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginAlreadyExistsException);
     }
 
     String encryptedPassword = new BCryptPasswordEncoder().encode(registerRequest.getPassword());
-    UserModel newUser = new UserModel(registerRequest.getName(), registerRequest.getLogin(), encryptedPassword,
+    UserModel newUser = new UserModel(
+        registerRequest.getName(),
+        registerRequest.getLogin(),
+        encryptedPassword,
         registerRequest.getRole());
 
     this.userRepository.save(newUser);
@@ -90,5 +92,4 @@ public class AuthenticationController {
 
   }
 
-  
 }
