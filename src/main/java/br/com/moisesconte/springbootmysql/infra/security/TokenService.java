@@ -45,8 +45,10 @@ public class TokenService {
           .getSubject();
 
     } catch (JWTVerificationException exception) {
-      return "";
+      //System.out.println("JWTVerificationException => " + exception.getMessage());
+      throw new RuntimeException(exception.getMessage());
     }
+    // return "";
   }
 
   private Instant genExpirationDate() {

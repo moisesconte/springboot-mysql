@@ -19,7 +19,7 @@ public class UserController {
   private IUserRepository userRepository;
 
   @PostMapping("/")
-  public ResponseEntity users(@RequestBody UserModel userModel) {
+  public ResponseEntity<?> users(@RequestBody UserModel userModel) {
 
     var user = this.userRepository.save(userModel);
 

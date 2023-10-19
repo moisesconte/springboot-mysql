@@ -26,6 +26,9 @@ public class SecurityConfigurations {
   @Autowired
   private SecurityFilter securityFilter;
 
+  @Autowired
+  private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -51,13 +54,12 @@ public class SecurityConfigurations {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
         .csrf(csrf -> csrf.disable())
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-            // .requestMatchers(HttpMethod.POST, "/auth/refreshtoken").permitAll()
-            // .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
             .requestMatchers(HttpMethod.POST, "/products").hasAnyRole("ADMIN")
             .anyRequest().authenticated())
+        .exceptionHandling(e -> e.authenticationEntryPoint(customAuthenticationEntryPoint))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }

@@ -1,14 +1,12 @@
 package br.com.moisesconte.springbootmysql.controllers;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.moisesconte.springbootmysql.domain.user.AuthenticationDTO;
 import br.com.moisesconte.springbootmysql.domain.user.LoginResponseDTO;
 import br.com.moisesconte.springbootmysql.domain.user.RefreshTokenModel;
-import br.com.moisesconte.springbootmysql.domain.user.RegisterDTO;
+import br.com.moisesconte.springbootmysql.domain.user.RegisterRequestDTO;
 import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshRequest;
 import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshResponse;
 import br.com.moisesconte.springbootmysql.domain.user.UserModel;
+import br.com.moisesconte.springbootmysql.exception.LoginAlreadyExistsException;
 import br.com.moisesconte.springbootmysql.exception.TokenRefreshException;
 import br.com.moisesconte.springbootmysql.infra.security.TokenService;
 import br.com.moisesconte.springbootmysql.repositories.IUserRepository;
@@ -45,10 +44,10 @@ public class AuthenticationController {
   private IUserRepository userRepository;
 
   @PostMapping("/login")
-  public ResponseEntity login(@RequestBody AuthenticationDTO data) {
+  public ResponseEntity<?> login(@Validated @RequestBody AuthenticationDTO data) {
+
     var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
     var auth = this.authenticationManager.authenticate(usernamePassword);
-
     var token = this.tokenService.generateToken((UserModel) auth.getPrincipal());
 
     UserModel user = (UserModel) this.userRepository.findByLogin(data.login());
@@ -58,12 +57,19 @@ public class AuthenticationController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity register(@RequestBody RegisterDTO data) {
-    if (this.userRepository.findByLogin(data.login()) != null)
-      return ResponseEntity.badRequest().build();
+  public ResponseEntity<?> register(@Validated @RequestBody RegisterRequestDTO registerRequest) {
 
-    String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-    UserModel newUser = new UserModel(data.name(), data.login(), encryptedPassword, data.role());
+    if (this.userRepository.findByLogin(registerRequest.getLogin()) != null) {
+      // final Map<String, Object> body = new HashMap<>();
+      // body.put("message", "Login já em uso.");
+      LoginAlreadyExistsException loginAlreadyExistsException = new LoginAlreadyExistsException();
+
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(loginAlreadyExistsException);
+    }
+
+    String encryptedPassword = new BCryptPasswordEncoder().encode(registerRequest.getPassword());
+    UserModel newUser = new UserModel(registerRequest.getName(), registerRequest.getLogin(), encryptedPassword,
+        registerRequest.getRole());
 
     this.userRepository.save(newUser);
 
@@ -71,7 +77,7 @@ public class AuthenticationController {
   }
 
   @PostMapping("/refreshtoken")
-  public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+  public ResponseEntity<?> refreshToken(@Validated @RequestBody TokenRefreshRequest request) {
     String requestRefreshToken = request.getRefreshToken();
 
     return refreshTokenService.findByToken(requestRefreshToken)

@@ -16,7 +16,7 @@ public class ProductController {
   private IProductRepository productRepository;
 
   @GetMapping("/all")
-  public ResponseEntity products() {
+  public ResponseEntity<?> products() {
     var products = this.productRepository.findAll();
 
     return ResponseEntity.ok().body(products);
