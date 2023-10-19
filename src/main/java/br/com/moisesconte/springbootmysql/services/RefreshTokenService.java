@@ -31,6 +31,12 @@ public class RefreshTokenService {
   }
 
   public RefreshTokenModel createRefreshToken(UUID userId) {
+
+    for (RefreshTokenModel refreshTokenStorage : refreshTokenRepository
+        .findByUser(userRepository.findById(userId).get())) {
+      refreshTokenRepository.deleteById(refreshTokenStorage.getId());
+    }
+
     RefreshTokenModel refreshToken = new RefreshTokenModel();
 
     refreshToken.setToken(userId.toString());

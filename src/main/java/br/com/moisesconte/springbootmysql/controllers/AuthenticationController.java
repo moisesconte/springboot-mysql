@@ -22,6 +22,7 @@ import br.com.moisesconte.springbootmysql.domain.user.RegisterDTO;
 import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshRequest;
 import br.com.moisesconte.springbootmysql.domain.user.TokenRefreshResponse;
 import br.com.moisesconte.springbootmysql.domain.user.UserModel;
+import br.com.moisesconte.springbootmysql.exception.TokenRefreshException;
 import br.com.moisesconte.springbootmysql.infra.security.TokenService;
 import br.com.moisesconte.springbootmysql.repositories.IUserRepository;
 import br.com.moisesconte.springbootmysql.services.RefreshTokenService;
@@ -70,7 +71,7 @@ public class AuthenticationController {
   }
 
   @PostMapping("/refreshtoken")
-  public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) throws Exception {
+  public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
     String requestRefreshToken = request.getRefreshToken();
 
     return refreshTokenService.findByToken(requestRefreshToken)
@@ -79,9 +80,11 @@ public class AuthenticationController {
         .map(user -> {
           String token = tokenService.generateToken(user);
 
-          return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+          var refreshTokenModel = refreshTokenService.createRefreshToken(user.getId());
+
+          return ResponseEntity.ok(new TokenRefreshResponse(token, refreshTokenModel.getToken()));
         })
-        .orElseThrow(() -> new Exception("Refresh token is not in database!"));
+        .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database!"));
 
   }
 }
